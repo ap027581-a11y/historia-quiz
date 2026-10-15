@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#15132e">
+  <title>Historia Quiz</title>
+  <style>
+    :root { --bg:#111127; --panel:#1d1b3b; --panel2:#29264e; --text:#f7f5ff; --muted:#b9b6d8; --purple:#8b5cf6; --cyan:#22d3ee; --green:#34d399; --red:#fb7185; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--text); font-family:system-ui,-apple-system,Segoe UI,sans-serif; background:radial-gradient(circle at 15% 0%,#33245e 0,transparent 38%),radial-gradient(circle at 100% 15%,#123d58 0,transparent 32%),var(--bg); }
+    button,input { font:inherit; }
+    button { cursor:pointer; border:0; border-radius:14px; padding:13px 16px; font-weight:800; transition:transform .12s,filter .12s; }
+    button:hover { filter:brightness(1.08); transform:translateY(-1px); } button:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+    .wrap { max-width:1050px; margin:auto; padding:20px; }
+    header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:22px; }
+    .brand { display:flex; gap:11px; align-items:center; font-size:1.2rem; font-weight:950; letter-spacing:-.04em; }
+    .logo { width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,var(--purple),var(--cyan));font-size:23px;box-shadow:0 8px 25px #0004; }
+    .pill { color:#d6d2f4;background:#ffffff10;border:1px solid #ffffff1c;padding:7px 11px;border-radius:999px;font-size:.82rem; }
+    .hero { text-align:center; padding:34px 0 22px; }
+    .eyebrow { color:var(--cyan);font-weight:900;letter-spacing:.15em;text-transform:uppercase;font-size:.75rem; }
+    h1 { font-size:clamp(2.2rem,7vw,4.8rem);line-height:.98;letter-spacing:-.06em;margin:12px 0; }
+    .gradient { background:linear-gradient(90deg,#c4b5fd,#67e8f9);-webkit-background-clip:text;background-clip:text;color:transparent; }
+    p { color:var(--muted);line-height:1.55; }
+    .panel { background:#1b1938df;border:1px solid #ffffff18;border-radius:24px;padding:clamp(18px,4vw,30px);box-shadow:0 20px 60px #0003; }
+    .home-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:800px;margin:20px auto; }
+    h2 { margin:0 0 10px;font-size:1.25rem; } label { display:block;color:var(--muted);font-size:.9rem;margin:13px 0 7px; }
+    input { width:100%;padding:13px 14px;border-radius:12px;border:1px solid #ffffff25;background:#100f25;color:white;outline:none; }
+    input:focus { border-color:var(--cyan);box-shadow:0 0 0 3px #22d3ee20; }
+    .primary { background:linear-gradient(100deg,#8b5cf6,#6366f1);color:white;width:100%;margin-top:14px;box-shadow:0 8px 22px #6d28d933; }
+    .secondary { background:#ffffff12;color:white;border:1px solid #ffffff20; }
+    .cyan { background:var(--cyan);color:#082f49; }
+    .note { min-height:22px;color:#fda4af;font-size:.9rem;margin-top:10px; }
+    .features { display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:24px 0; }
+    .feature { border:1px solid #ffffff1c;background:#ffffff09;border-radius:12px;padding:10px 13px;color:#e4e0ff;font-size:.88rem; }
+    .hidden { display:none !important; }
+    .room-top { display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px; }
+    .code { font-size:clamp(2rem,7vw,3.3rem);font-weight:1000;letter-spacing:.16em;color:var(--cyan); }
+    .game-grid { display:grid;grid-template-columns:minmax(0,1.6fr) minmax(240px,.8fr);gap:16px; }
+    .question-count { color:var(--cyan);font-weight:900;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase; }
+    .timer-row { display:flex;align-items:center;gap:12px;margin:18px 0; }
+    .timer { font-size:1.4rem;font-weight:950;min-width:55px; }
+    .bar { height:10px;background:#ffffff15;border-radius:99px;overflow:hidden;flex:1; }
+    .bar-fill { height:100%;width:100%;background:linear-gradient(90deg,var(--green),var(--cyan));transition:width .25s linear; }
+    .question { font-size:clamp(1.35rem,3.5vw,2rem);line-height:1.2;font-weight:900;margin:12px 0 20px; }
+    .answers { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
+    .answer { min-height:75px;text-align:left;color:white;display:flex;gap:12px;align-items:center;border:2px solid #ffffff18; }
+    .answer span:first-child { flex:0 0 32px;width:32px;height:32px;display:grid;place-items:center;border-radius:9px;background:#0002;font-weight:950; }
+    .answer:nth-child(1){background:#e34b65}.answer:nth-child(2){background:#356fe0}.answer:nth-child(3){background:#b98216}.answer:nth-child(4){background:#168c7b}
+    .answer.selected { outline:3px solid white;filter:brightness(1.15); }
+    .answer.correct { outline:3px solid var(--green); }
+    .answer.wrong { opacity:.45; }
+    .status { border-radius:13px;padding:12px 14px;background:#ffffff0b;color:#e5e2ff;margin-top:14px; }
+    .players { display:flex;flex-direction:column;gap:9px;margin-top:14px; }
+    .player { display:flex;align-items:center;gap:10px;background:#ffffff08;padding:10px 12px;border-radius:12px; }
+    .rank { color:var(--cyan);font-weight:950;width:25px; }
+    .player-name { flex:1;overflow:hidden;text-overflow:ellipsis; }
+    .score { font-weight:900;white-space:nowrap; }
+    .fact { border-left:4px solid var(--cyan);padding:12px 14px;background:#22d3ee12;border-radius:0 12px 12px 0;color:#d9faff;line-height:1.5;margin:14px 0; }
+    .big-icon { font-size:3rem;margin-bottom:8px; }
+    .center { text-align:center; }
+    footer { text-align:center;color:#827fa8;font-size:.8rem;padding:24px 0 10px; }
+    @media(max-width:720px){.home-grid,.game-grid{grid-template-columns:1fr}.hero{padding-top:20px}.wrap{padding:14px}.answers{grid-template-columns:1fr 1fr}.answer{padding:10px;min-height:82px;font-size:.92rem}.room-top{align-items:flex-start}.panel{border-radius:19px}}
+    @media(max-width:390px){.answers{grid-template-columns:1fr}.answer{min-height:58px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand"><div class="logo">🏛️</div><div>HISTORIA <span class="gradient">QUIZ</span></div></div>
+      <div class="pill">⚡ Trivia en vivo</div>
+    </header>
+
+    <section id="home">
+      <div class="hero">
+        <div class="eyebrow">Aprende · Compite · Gana</div>
+        <h1>La historia<br><span class="gradient">se juega.</span></h1>
+        <p>Demuestra lo que sabes, reta a tus amigos y sube al primer lugar.</p>
+        <div class="features"><div class="feature">⏱️ 20 segundos por pregunta</div><div class="feature">🏆 Puntos por rapidez</div><div class="feature">👥 Hasta 40 jugadores</div></div>
+      </div>
+      <div class="home-grid">
+        <div class="panel">
+          <h2>🎮 Crear partida</h2><p>Conviértete en anfitrión y comparte el código con tu clase.</p>
+          <label for="hostName">Tu nombre</label><input id="hostName" maxlength="18" placeholder="Ej. Profe Alex" value="Anfitrión">
+          <button class="primary" id="createBtn">Crear sala</button>
+        </div>
+        <div class="panel">
+          <h2>🚀 Unirme a partida</h2><p>Escribe el código que te compartió el anfitrión.</p>
+          <label for="playerName">Tu nombre</label><input id="playerName" maxlength="18" placeholder="Ej. Alex">
+          <label for="roomCode">Código de sala</label><input id="roomCode" maxlength="4" placeholder="AB12" autocapitalize="characters">
+          <button class="primary" id="joinBtn">Entrar al juego</button>
+        </div>
+      </div>
+      <div class="note center" id="homeNotice" role="status"></div>
+    </section>
+
+    <section id="lobby" class="hidden">
+      <div class="panel">
+        <div class="room-top"><div><div class="eyebrow">Sala de espera</div><h2>¡Reúne a tu equipo!</h2><p>Comparte este código para que entren los demás.</p></div><div class="center"><div class="code" id="displayCode">----</div><button class="secondary" id="copyCode">Copiar código</button></div></div>
+        <div id="hostControls" class="hidden"><button class="primary" id="startBtn">🚀 Iniciar partida</button><p class="center">La partida empieza cuando haya al menos un jugador.</p></div>
+        <div id="playerWaiting" class="status hidden">Estás dentro. Espera a que el anfitrión inicie la partida.</div>
+        <h2 style="margin-top:24px">Jugadores conectados <span id="playerCount" class="gradient">0</span></h2>
+        <div id="lobbyPlayers" class="players"></div>
+        <div class="note" id="lobbyNotice" role="status"></div>
+      </div>
+    </section>
+
+    <section id="game" class="hidden">
+      <div class="room-top"><div class="pill">Sala <strong id="gameCode"></strong></div><div class="pill">Pregunta <strong id="questionNumber">1/10</strong></div></div>
+      <div class="game-grid">
+        <div class="panel">
+          <div class="question-count" id="questionLabel">Pregunta 1 de 10</div>
+          <div class="timer-row"><div class="timer" id="timer">20s</div><div class="bar"><div class="bar-fill" id="timerFill"></div></div></div>
+          <div class="question" id="questionText">Preparando pregunta…</div>
+          <div class="answers" id="answers"></div>
+          <div class="status" id="gameStatus">Elige la respuesta correcta.</div>
+          <div class="fact hidden" id="fact"></div>
+          <button class="primary hidden" id="nextBtn">Siguiente pregunta →</button>
+        </div>
+        <aside class="panel">
+          <h2>🏆 Clasificación</h2><p>Los puntos se actualizan en directo.</p>
+          <div id="leaderboard" class="players"></div>
+          <div class="status" id="answerCount">Esperando respuestas…</div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="finished" class="hidden">
+      <div class="panel center">
+        <div class="big-icon">🏆</div><div class="eyebrow">Partida terminada</div><h1 style="font-size:clamp(2rem,6vw,3.6rem)">¡Gran trabajo!</h1><p>Así quedó la clasificación final.</p>
+        <div id="finalLeaderboard" class="players" style="max-width:600px;margin:20px auto"></div>
+        <button class="primary" id="playAgain">Volver al inicio</button>
+      </div>
+    </section>
+    <footer>Historia Quiz · Hecho para aprender jugando</footer>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const $ = id => document.getElementById(id);
+    let isHost = false, currentCode = "", selectedAnswer = null, answered = false, currentQuestion = null, latestPlayers = [];
+    const sections = ["home","lobby","game","finished"];
+    function showSection(id) { sections.forEach(s => $(s).classList.toggle("hidden", s !== id)); }
+    function escapeHtml(value) { return String(value).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
+    function renderPlayers(target, players, showAnswered=false) {
+      const el = $(target);
+      if (!players.length) { el.innerHTML = '<div class="status">Todavía no hay jugadores.</div>'; return; }
+      el.innerHTML = players.map((p,i) => `<div class="player"><div class="rank">${i===0?"👑":i+1}</div><div class="player-name">${escapeHtml(p.name)}${showAnswered && p.answered ? " ✓" : ""}</div><div class="score">${Number(p.score).toLocaleString()} pts</div></div>`).join("");
+    }
+    function sayHome(message) { $("homeNotice").textContent = message || ""; }
+    $("createBtn").addEventListener("click", () => {
+      sayHome(""); isHost = true;
+      socket.emit("create-room", { name: $("hostName").value.trim() || "Anfitrión" });
+      $("createBtn").disabled = true;
+    });
+    $("joinBtn").addEventListener("click", () => {
+      sayHome("");
+      const name = $("playerName").value.trim();
+      const code = $("roomCode").value.trim().toUpperCase();
+      if (!name || !code) return sayHome("Escribe tu nombre y el código de la sala.");
+      isHost = false;
+      socket.emit("join-room", { name, code });
+      $("joinBtn").disabled = true;
+    });
+    $("roomCode").addEventListener("input", e => e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,4));
+    $("copyCode").addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(currentCode); $("copyCode").textContent = "¡Código copiado!"; }
+      catch { $("copyCode").textContent = "Código: " + currentCode; }
+    });
+    $("startBtn").addEventListener("click", () => socket.emit("start-game"));
+    $("nextBtn").addEventListener("click", () => { $("nextBtn").disabled = true; socket.emit("next-question"); });
+    $("playAgain").addEventListener("click", () => location.reload());
+
+    socket.on("room-created", ({code}) => {
+      currentCode = code; $("displayCode").textContent = code; $("gameCode").textContent = code;
+      $("hostControls").classList.remove("hidden"); $("playerWaiting").classList.add("hidden");
+      showSection("lobby");
+    });
+    socket.on("joined-room", ({code}) => {
+      currentCode = code; $("displayCode").textContent = code; $("gameCode").textContent = code;
+      $("hostControls").classList.add("hidden"); $("playerWaiting").classList.remove("hidden");
+      showSection("lobby");
+    });
+    socket.on("join-error", message => { sayHome(message); $("joinBtn").disabled = false; });
+    socket.on("host-notice", message => { $("lobbyNotice").textContent = message; });
+    socket.on("lobby-update", ({code,players}) => {
+      currentCode = code; latestPlayers = players;
+      $("displayCode").textContent = code; $("playerCount").textContent = players.length;
+      renderPlayers("lobbyPlayers", players);
+    });
+    socket.on("new-question", data => {
+      currentQuestion = data; selectedAnswer = null; answered = false;
+      showSection("game");
+      $("gameCode").textContent = currentCode;
+      $("questionNumber").textContent = `${data.index+1}/${data.total}`;
+      $("questionLabel").textContent = `Pregunta ${data.index+1} de ${data.total}`;
+      $("questionText").textContent = data.question;
+      $("timer").textContent = `${data.timeLeft}s`;
+      $("timerFill").style.width = "100%";
+      $("gameStatus").textContent = isHost ? "La pregunta está en curso. Observa cómo responden." : "Elige la respuesta correcta.";
+      $("fact").classList.add("hidden"); $("nextBtn").classList.add("hidden"); $("nextBtn").disabled = false;
+      $("answerCount").textContent = `0 de ${latestPlayers.length} respuestas`;
+      const answers = $("answers"); answers.innerHTML = "";
+      data.options.forEach((option,i) => {
+        const btn = document.createElement("button");
+        btn.className = "answer"; btn.innerHTML = `<span>${"ABCD"[i]}</span><span>${escapeHtml(option)}</span>`;
+        btn.addEventListener("click", () => {
+          if (isHost || answered || selectedAnswer !== null) return;
+          selectedAnswer = i; answered = true;
+          [...answers.children].forEach(b => b.disabled = true);
+          btn.classList.add("selected");
+          $("gameStatus").textContent = "Respuesta enviada. ¡A esperar!";
+          socket.emit("submit-answer", {answer:i});
+        });
+        answers.appendChild(btn);
+      });
+      renderPlayers("leaderboard", data.leaderboard || latestPlayers, true);
+    });
+    socket.on("timer-tick", ({timeLeft}) => {
+      $("timer").textContent = `${Math.max(0,timeLeft)}s`;
+      $("timerFill").style.width = `${Math.max(0,timeLeft)/20*100}%`;
+      if (timeLeft <= 5) $("timerFill").style.background = "var(--red)";
+      else $("timerFill").style.background = "linear-gradient(90deg,var(--green),var(--cyan))";
+    });
+    socket.on("answer-count", ({answered,total}) => $("answerCount").textContent = `${answered} de ${total} respuestas`);
+    socket.on("answer-accepted", () => {});
+    socket.on("question-reveal", data => {
+      $("fact").textContent = "💡 " + data.fact; $("fact").classList.remove("hidden");
+      $("gameStatus").textContent = `Respuesta correcta: ${"ABCD"[data.correctAnswer]}.`;
+      [...$("answers").children].forEach((btn,i) => {
+        btn.disabled = true;
+        if (i === data.correctAnswer) btn.classList.add("correct");
+        else if (i === selectedAnswer) btn.classList.add("wrong");
+      });
+      renderPlayers("leaderboard", data.leaderboard, true);
+      if (isHost) { $("nextBtn").textContent = data.index === data.total-1 ? "Ver resultados finales →" : "Siguiente pregunta →"; $("nextBtn").classList.remove("hidden"); }
+      else $("gameStatus").textContent += " Mira la clasificación mientras el anfitrión avanza.";
+    });
+    socket.on("game-finished", ({leaderboard}) => {
+      showSection("finished"); renderPlayers("finalLeaderboard", leaderboard);
+    });
+    socket.on("room-closed", message => { alert(message); location.reload(); });
+    socket.on("connect_error", () => sayHome("No se pudo conectar. Recarga la página e inténtalo de nuevo."));
+  </script>
+</body>
+</html>
